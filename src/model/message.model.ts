@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose"
-interface MessagesTypes extends Document {
+export interface MessagesTypes extends Document {
     content: string;
     createdAt: Date;
     username: string
@@ -21,4 +21,4 @@ const messageSchmea: Schema<MessagesTypes> = new Schema({
     }
 })
 
-export default (mongoose?.models?.Messages as mongoose.Model<MessagesTypes>) || mongoose.model<MessagesTypes>("Messages", messageSchmea);
+export const MessageModel = (mongoose.models.Messages as mongoose.Model<MessagesTypes>) || mongoose.model<MessagesTypes>("Messages", messageSchmea);

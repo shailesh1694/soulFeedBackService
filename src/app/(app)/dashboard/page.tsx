@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/use-toast';
 import { acceptMessageSchema } from '@/schemas/acceptMessage';
-import { ApiResponse } from '@/types/ApiResponse';
+import { ApiMessage, ApiResponse } from '@/types/ApiResponse';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Separator } from '@radix-ui/react-separator';
 import axios, { AxiosError } from 'axios';
 import { Loader2, RefreshCcw } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react'
+import MessageItem from '@/components/MessageItem';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -18,11 +19,12 @@ const Dashboard = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isSwitchLoading, setIsSwitchLoading] = useState<boolean>(false)
+    const [messages, setMessages] = useState<ApiMessage[]>([])
     const session = useSession()
     const { toast } = useToast()
 
     useEffect(() => {
-        getacceptMessageStatus()
+        Promise.all([getacceptMessageStatus(), getAllFeedback()])
     }, [])
 
     const { register, watch, setValue, formState: { errors }, reset } = useForm<z.infer<typeof acceptMessageSchema>>({
@@ -49,7 +51,7 @@ const Dashboard = () => {
     const getacceptMessageStatus = useCallback(async () => {
         setIsSwitchLoading(true)
         try {
-            const result = await axios.post<ApiResponse>("/api/accept-messages",{})
+            const result = await axios.post<ApiResponse>("/api/accept-messages", {})
             setValue("acceptMessages", result.data.isAceptingMessage as boolean)
         } catch (error) {
             const axiosError = error as AxiosError<ApiResponse>
@@ -57,8 +59,27 @@ const Dashboard = () => {
         } finally {
             setIsSwitchLoading(false)
         }
-    },[])
+    }, [])
 
+    const getAllFeedback = useCallback(async (refresh: boolean = false) => {
+
+        setIsLoading(true)
+        setIsSwitchLoading(false)
+        try {
+            const result = await axios.get<ApiResponse>("/api/get-messages")
+
+            setMessages(result.data.data?.feedback as ApiMessage[])
+            if (refresh) {
+                toast({ title: "Refreshed Messages", description: "Showing latest messages" })
+            }
+        } catch (error) {
+            const axiosError = error as AxiosError<ApiResponse>
+            toast({ title: "Error", description: axiosError.response?.data.message, variant: "destructive" })
+        } finally {
+            setIsSwitchLoading(false)
+            setIsLoading(false)
+        }
+    }, [])
 
 
     const copytoClipBoard = useCallback((url: string) => {
@@ -66,9 +87,15 @@ const Dashboard = () => {
         toast({ title: "URL Copied!", description: "Profile URL has been copied to Clipboard!" })
     }, [])
 
+    const onDeleteMsg = (messageId: string) => {
+        getAllFeedback(true)
+    }
+
     if (!session || !session.data?.user) return <div></div>
 
     const profileUrl = window && `${window?.location?.protocol}//${window?.location?.host}/me/${session.data?.user?.username}`
+
+
 
     return (
         <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
@@ -105,7 +132,8 @@ const Dashboard = () => {
                 className="mt-4"
                 variant="outline"
                 onClick={(e) => {
-
+                    e.preventDefault()
+                    getAllFeedback(true)
                 }}
             >
                 {isLoading ? (
@@ -115,17 +143,17 @@ const Dashboard = () => {
                 )}
             </Button>
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* {messages.length > 0 ? (
-                    messages.map((message, index) => (
-                        <MessageCard
-                            key={message._id}
-                            message={message}
-                            onMessageDelete={handleDeleteMessage}
+                {messages.length > 0 ? (
+                    messages.map((item, index) => (
+                        <MessageItem
+                            key={item._id}
+                            item={item}
+                            onDeleteMsg={onDeleteMsg}
                         />
                     ))
                 ) : (
                     <p>No messages to display.</p>
-                )} */}
+                )}
             </div>
         </div>
     )

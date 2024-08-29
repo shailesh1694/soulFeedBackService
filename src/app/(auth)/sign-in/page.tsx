@@ -30,7 +30,7 @@ const SingInCompo: React.FC<{}> = () => {
       const result = await signIn("credentials", {
         redirect: false,
         identifier: values.identifier,
-        password: values.password
+        password: values.password,
       })
       console.log(result, "result")
       if (result?.error === "CredentialsSignin") {
