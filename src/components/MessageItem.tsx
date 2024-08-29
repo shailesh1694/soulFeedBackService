@@ -31,7 +31,7 @@ const itemItem = ({ item,onDeleteMsg }: { item: ApiMessage,onDeleteMsg:(messageI
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <CardTitle>{item.content}</CardTitle>
-                    <AlertDialog>
+                    {/* <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant='destructive'>
                                 <X className="w-5 h-5" />
@@ -54,7 +54,7 @@ const itemItem = ({ item,onDeleteMsg }: { item: ApiMessage,onDeleteMsg:(messageI
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
-                    </AlertDialog>
+                    </AlertDialog> */}
                 </div>
                 <div className="text-sm">
                     {dayjs(new Date()).format('MMM D, YYYY h:mm A')}
