@@ -3,8 +3,8 @@ import { auth } from "./auth";
 
 
 export const config = {
-    matcher: ['/sign-in', '/sign-up', '/', '/verify/:path*'],
-};
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)'],
+  }
 
 export async function middleware(req: NextRequest) {
     const session = await auth()
@@ -24,6 +24,7 @@ export async function middleware(req: NextRequest) {
     }
 
     if (!session?.user && url.pathname.startsWith('/dashboard')) {
+        console.log("first")
         return NextResponse.redirect(new URL('/sign-in', req.url));
     }
 

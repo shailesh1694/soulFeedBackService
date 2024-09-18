@@ -4,10 +4,10 @@ import dbConnet from "@/lib/dbConnect";
 import { MessageModel } from "@/model/message.model";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { messageid: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { messageId: string } }) {
     await dbConnet();
     const session = await auth();
-    const messageId = params.messageid
+    const messageId = params.messageId
     try {
 
 
@@ -17,9 +17,8 @@ export async function GET(request: NextRequest, { params }: { params: { messagei
                 { status: 400 }
             )
         }
-        const findOneand = await MessageModel.findOneAndDelete({ _id: messageId })
+        const findOneand = await MessageModel.findByIdAndDelete({ _id: messageId })
 
-        console.log(findOneand, "findOneand")
         return Response.json(
             {
                 success: true,

@@ -24,7 +24,9 @@ const Dashboard = () => {
     const { toast } = useToast()
 
     useEffect(() => {
-        Promise.all([getacceptMessageStatus(), getAllFeedback()])
+        // if(session.data?.user){
+            Promise.all([getacceptMessageStatus(), getAllFeedback()])
+        // }
     }, [])
 
     const { register, watch, setValue, formState: { errors }, reset } = useForm<z.infer<typeof acceptMessageSchema>>({
@@ -48,7 +50,7 @@ const Dashboard = () => {
         }
     }
 
-    const getacceptMessageStatus = useCallback(async () => {
+    const getacceptMessageStatus = async () => {
         setIsSwitchLoading(true)
         try {
             const result = await axios.post<ApiResponse>("/api/accept-messages", {})
@@ -59,9 +61,9 @@ const Dashboard = () => {
         } finally {
             setIsSwitchLoading(false)
         }
-    }, [])
+    }
 
-    const getAllFeedback = useCallback(async (refresh: boolean = false) => {
+    const getAllFeedback = async (refresh: boolean = false) => {
 
         setIsLoading(true)
         setIsSwitchLoading(false)
@@ -79,7 +81,7 @@ const Dashboard = () => {
             setIsSwitchLoading(false)
             setIsLoading(false)
         }
-    }, [])
+    }
 
 
     const copytoClipBoard = useCallback((url: string) => {

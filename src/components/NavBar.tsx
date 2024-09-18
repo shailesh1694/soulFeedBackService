@@ -19,7 +19,7 @@ const NavBar = () => {
                         <span>
                             Welcome,to {session.data.user.username}
                         </span>
-                        <Button onClick={() => signOut({ redirect: true, callbackUrl: "/" })} variant="outline" className='w-full md:w-auto bg-slate-100 text-black'>Logout</Button>
+                        <Button onClick={() => signOut({ redirect: true, callbackUrl: "/" ,})} variant="outline" className='w-full md:w-auto bg-slate-100 text-black'>Logout</Button>
                     </>
                     :
                     <Button onClick={() => router.replace("/sign-in")} variant="outline" className='w-full md:w-auto bg-slate-100 text-black'>Login</Button>

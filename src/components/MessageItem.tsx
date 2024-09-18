@@ -9,7 +9,7 @@ import { ApiMessage, ApiResponse } from '@/types/ApiResponse'
 import axios, { AxiosError } from 'axios'
 import { useToast } from './ui/use-toast'
 
-const itemItem = ({ item,onDeleteMsg }: { item: ApiMessage,onDeleteMsg:(messageId:string)=>void }) => {
+const itemItem = ({ item, onDeleteMsg }: { item: ApiMessage, onDeleteMsg: (messageId: string) => void }) => {
     const { toast } = useToast()
 
     const handleDeleteConfirm = async () => {
@@ -20,7 +20,7 @@ const itemItem = ({ item,onDeleteMsg }: { item: ApiMessage,onDeleteMsg:(messageI
             onDeleteMsg(item._id)
         } catch (error) {
             const axiosError = error as AxiosError<ApiResponse>
-            toast({ title: "Error in Delete Message !" ,description:axiosError.response?.data.message,variant:"destructive"})
+            toast({ title: "Error in Delete Message !", description: axiosError.response?.data.message, variant: "destructive" })
         }
 
     }
@@ -31,7 +31,7 @@ const itemItem = ({ item,onDeleteMsg }: { item: ApiMessage,onDeleteMsg:(messageI
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <CardTitle>{item.content}</CardTitle>
-                    {/* <AlertDialog>
+                    <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant='destructive'>
                                 <X className="w-5 h-5" />
@@ -54,7 +54,7 @@ const itemItem = ({ item,onDeleteMsg }: { item: ApiMessage,onDeleteMsg:(messageI
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
-                    </AlertDialog> */}
+                    </AlertDialog>
                 </div>
                 <div className="text-sm">
                     {dayjs(new Date()).format('MMM D, YYYY h:mm A')}
